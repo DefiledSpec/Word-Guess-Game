@@ -40,7 +40,7 @@ class Word {
     checkCompleted() {
         let idx = this.unsolvedArr.indexOf('_');
         if (idx == -1) {
-            alert('You win!');
+            alert('You win! The word was: ' + this.startWord);
         } else {
             log('Getting closer!');
         }
@@ -73,14 +73,15 @@ class Player {
         this.guesses = 0;
     }
     addInput(input) {
-        p.guesses++;
+        
         let alreadyUsed = this.inputArr.indexOf(input);
         if(p.guesses > 11) {
-            log('Too many guesses, better luck next time!');
+            alert('Too many guesses, better luck next time!');
             return;
         } else if(alreadyUsed !== -1) {
             log('You already guessed that letter!');
         } else {
+            p.guesses++;
             this.inputArr.push(input);
             word.checkWord(input);
         }
@@ -91,7 +92,7 @@ class Player {
         for(let i = 0; i < this.inputArr.length; i++) {
             text += `${this.inputArr[i]} `;
         }
-        userInput.innerHTML = this.inputArr;
+        userInput.innerHTML = text;
         guessInput.innerHTML = p.guesses;
     }
 }
