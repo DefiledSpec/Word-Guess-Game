@@ -76,7 +76,7 @@ class Player {
         
         let alreadyUsed = this.inputArr.indexOf(input);
         if(p.guesses > 11) {
-            alert('Too many guesses, better luck next time!');
+            alert('Too many guesses, better luck next time! The word was ' + word.startWord);
             return;
         } else if(alreadyUsed !== -1) {
             log('You already guessed that letter!');
