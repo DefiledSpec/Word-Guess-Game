@@ -22,8 +22,6 @@ class Word {
         this.startWord = word;
         this.wordArr = word.split('');
         this.unsolvedArr = this.initArray(this.wordArr);
-        // this.guessAllowed = this.wordArr.length * 2;
-        log(this.wordArr.length);
     }
     initArray(arr) {
         let arr2 = [];
@@ -37,15 +35,14 @@ class Word {
         for(let i = 0; i < this.unsolvedArr.length; i++) {
             text += `${this.unsolvedArr[i]} `;
         }
-        unsolved.innerHTML = text;
-        
+        unsolved.innerHTML = text;   
     }
     checkCompleted() {
         let idx = this.unsolvedArr.indexOf('_');
         if (idx == -1) {
-            log('you win!');
+            alert('You win!');
         } else {
-            log('getting closer!');
+            log('Getting closer!');
         }
     }
     checkWord(input) {
@@ -67,7 +64,6 @@ class Game {
     constructor() {
         this.running = false;
     }
-
 }
 
 class Player {
@@ -75,12 +71,10 @@ class Player {
         this.inputArr = [ ];
         this.score = 0;
         this.guesses = 0;
-        // log(this.inputArr.length)
     }
     addInput(input) {
         p.guesses++;
         let alreadyUsed = this.inputArr.indexOf(input);
-        log(alreadyUsed);
         if(p.guesses > 11) {
             log('Too many guesses, better luck next time!');
             return;
@@ -107,7 +101,6 @@ let g = new Game();
 function start() {
     generateRndmWord();
     
-    
 }
 
 window.addEventListener('keydown', checkKeyPress, false);
@@ -115,19 +108,15 @@ function checkKeyPress(key) {
     let x = 65; 
     let y = 90;
     if(key.keyCode >= x && key.keyCode <= y) {
-        // log('Valid Key', key.keyCode);
         p.addInput(key.key);
     }else{
         log(key.key + ' is an invalid key, please enter letters only!');
     }
 }
 
-
-
 function generateRndmWord() {
     let rndWord = wordList[randIntRange(wordList.length)];
     word = new Word(rndWord);
-    // word = new Word('apple');
     console.log('Random word generated: ' + word.startWord);
     word.displayText();
 }
@@ -135,7 +124,6 @@ function generateRndmWord() {
 // Utilities
 function randIntRange(range) {
     let rand = Math.floor(Math.random() * range);
-    // console.log(rand);
     return rand;
 }
 function getId(id) {
