@@ -3,11 +3,11 @@ let log = console.log;
 
 let unsolved = getId('unsolvedWord');
 let userInput = getId('usersInput');
-let guessInput = getId('guessInput');
+let userScore = getId('userScore');
 
 // Variables
-let word;
-let wordList = [
+let word, p;
+let wordList = [ //Add colors ass needed
     'blue',
     'red',
     'green',
@@ -15,13 +15,16 @@ let wordList = [
     'black',
     'teal'
 ];
-
-// Classes
+// Classess
+/**
+ * This class initiates the word that was randomly generated and creates its assocciated arrays.
+ */
 class Word {
     constructor(word) {
         this.startWord = word;
         this.wordArr = word.split('');
         this.unsolvedArr = this.initArray(this.wordArr);
+        this.displayText();
     }
     initArray(arr) {
         let arr2 = [];
@@ -33,14 +36,15 @@ class Word {
     displayText() {
         let text = '';
         for(let i = 0; i < this.unsolvedArr.length; i++) {
-            text += `${this.unsolvedArr[i]} `;
+            text += this.unsolvedArr[i];
         }
         unsolved.innerHTML = text;   
     }
     checkCompleted() {
         let idx = this.unsolvedArr.indexOf('_');
         if (idx == -1) {
-            alert('You win! The word was: ' + this.startWord);
+            alert(`You win! The word was: ${this.startWord}`);
+            // g.running = false;
         } else {
             log('Getting closer!');
         }
@@ -51,7 +55,9 @@ class Word {
             if(this.wordArr[i] === input) {
                 let b = this.unsolvedArr.splice(i, 1, input); // if we find a match, update the unsolved arr
                 this.checkCompleted();
+                p.score++;// todo: MOVE THIS OUT of the LOOP
             } else {
+                p.score--;// todo: MOVE THIS OUT of the LOOP
                     // we didn't find a match for the char at this idx 
             }
         }
@@ -59,27 +65,31 @@ class Word {
     }
         
 }
-
-class Game {
-    constructor() {
-        this.running = false;
-    }
-}
-
+// Game state handler maybe?
+// class Game {
+//     constructor() {
+//         this.running = false; // set this to true after player 'presses any key to continue'
+//     }
+// }
+/**
+ * A class for handling things to do with the player such as score
+ */
 class Player {
     constructor() {
-        this.inputArr = [ ];
+        this.inputArr = [];
         this.score = 0;
         this.guesses = 0;
+        // this.displayText(); //this removes the start message on startup
+                                //maybe we should try to make the player later on and uncomment this
     }
-    addInput(input) {
-        
+    addInput(input) {        
         let alreadyUsed = this.inputArr.indexOf(input);
         if(p.guesses >= 11) {
-            alert('Too many guesses, better luck next time! The word was ' + word.startWord);
+            alert(`Too many guesses, better luck next time! The word was ${word.startWord}`);
+            // g.running = false;
             return;
         } else if(alreadyUsed !== -1) {
-            log('You already guessed that letter!');
+            log(`You already guessed that letter!`);
         } else {
             p.guesses++;
             this.inputArr.push(input);
@@ -90,39 +100,40 @@ class Player {
     displayText() {
         let text = '';
         for(let i = 0; i < this.inputArr.length; i++) {
-            text += `${this.inputArr[i]} `;
+            text += this.inputArr[i];
         }
         userInput.innerHTML = text;
-        guessInput.innerHTML = p.guesses;
+        guessInput.innerHTML = this.guesses;
+        userScore.innerHTML = this.score;
     }
 }
-
-let p = new Player();
-let g = new Game();
+//The code that runs it all
+// let g = new Game();
+p = new Player();
 function start() {
     generateRndmWord();
     
 }
+start();
 
-window.addEventListener('keydown', checkKeyPress, false);
-function checkKeyPress(key) {
+window.addEventListener('keydown', (key) => {
     let x = 65; 
     let y = 90;
     if(key.keyCode >= x && key.keyCode <= y) {
         p.addInput(key.key);
-    }else{
+    } else if(key.keyCode == 123) { //f12 debug menu
+        log('No Cheating! ;)');
+    } else {
         log(key.key + ' is an invalid key, please enter letters only!');
     }
-}
-
+});
+// Utilities
 function generateRndmWord() {
     let rndWord = wordList[randIntRange(wordList.length)];
     word = new Word(rndWord);
     console.log('Random word generated: ' + word.startWord);
     word.displayText();
 }
-
-// Utilities
 function randIntRange(range) {
     let rand = Math.floor(Math.random() * range);
     return rand;
@@ -130,6 +141,3 @@ function randIntRange(range) {
 function getId(id) {
     return document.getElementById(id);
 }
-
-
-start();

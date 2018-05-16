@@ -5,12 +5,23 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Js Game</title>
+    <style>
+        * {
+            margin:1em;
+            font-family: Arial, Helvetica, sans-serif
+        }
+        span {
+            font-weight: bold;
+            letter-spacing: .1em;
+        }
+    </style>
 </head>
 <body>
-    
+    <div id="start"></div>
     <p>Unsolved Word: <span id="unsolvedWord"></span></p>
-    <p>User's Input: <span id="usersInput"></span></p>
-    <p>User's Guesses: <span id="guessInput"></span></p>
+    <p>User's Input: <span id="usersInput">Press any key to start guessing!</span></p>
+    <p>User's Guesses: <span id="guessInput">0</span></p>
+    <p>User's Score: <span id="userScore">0</span></p>
 
     <script src="assets/js/game.js"></script>
 </body>
