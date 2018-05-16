@@ -1,4 +1,9 @@
+// On Start
+let log = console.log;
 
+let unsolved = getId('unsolvedWord');
+let userInput = getId('usersInput');
+let guessInput = getId('guessInput');
 
 // Variables
 let word;
@@ -17,7 +22,8 @@ class Word {
         this.startWord = word;
         this.wordArr = word.split('');
         this.unsolvedArr = this.initArray(this.wordArr);
-        // console.log(this.startWord);
+        // this.guessAllowed = this.wordArr.length * 2;
+        log(this.wordArr.length);
     }
     initArray(arr) {
         let arr2 = [];
@@ -26,37 +32,105 @@ class Word {
         }
         return arr2;
     }
-    checkWord(str) {
-        for(let i = 0; i < this.wordArr.length; i++) {
-            console.log('in loop');
+    displayText() {
+        let text = '';
+        for(let i = 0; i < this.unsolvedArr.length; i++) {
+            text += `${this.unsolvedArr[i]} `;
+        }
+        unsolved.innerHTML = text;
+        
+    }
+    checkCompleted() {
+        let idx = this.unsolvedArr.indexOf('_');
+        if (idx == -1) {
+            log('you win!');
+        } else {
+            log('getting closer!');
         }
     }
+    checkWord(input) {
+        //todo: decrement letter guesses here
+        for(let i = 0; i < this.wordArr.length; i++) {
+            if(this.wordArr[i] === input) {
+                let b = this.unsolvedArr.splice(i, 1, input); // if we find a match, update the unsolved arr
+                this.checkCompleted();
+            } else {
+                    // we didn't find a match for the char at this idx 
+            }
+        }
+        this.displayText();  
+    }
+        
 }
+
+class Game {
+    constructor() {
+        this.running = false;
+    }
+
+}
+
+class Player {
+    constructor() {
+        this.inputArr = [ ];
+        this.score = 0;
+        this.guesses = 0;
+        // log(this.inputArr.length)
+    }
+    addInput(input) {
+        p.guesses++;
+        let alreadyUsed = this.inputArr.indexOf(input);
+        log(alreadyUsed);
+        if(p.guesses > 11) {
+            log('Too many guesses, better luck next time!');
+            return;
+        } else if(alreadyUsed !== -1) {
+            log('You already guessed that letter!');
+        } else {
+            this.inputArr.push(input);
+            word.checkWord(input);
+        }
+        this.displayText();
+    }
+    displayText() {
+        let text = '';
+        for(let i = 0; i < this.inputArr.length; i++) {
+            text += `${this.inputArr[i]} `;
+        }
+        userInput.innerHTML = this.inputArr;
+        guessInput.innerHTML = p.guesses;
+    }
+}
+
+let p = new Player();
+let g = new Game();
 function start() {
     generateRndmWord();
-    displayText();
-    word.checkWord();
+    
+    
 }
 
-
-// On Start
-let unsolved = document.getElementById('unsolvedWord');
-
-function displayText() {
-    let text = '';
-    for(let i = 0; i < word.unsolvedArr.length; i++) {
-        text += `${word.unsolvedArr[i]} `;
+window.addEventListener('keydown', checkKeyPress, false);
+function checkKeyPress(key) {
+    let x = 65; 
+    let y = 90;
+    if(key.keyCode >= x && key.keyCode <= y) {
+        // log('Valid Key', key.keyCode);
+        p.addInput(key.key);
+    }else{
+        log(key.key + ' is an invalid key, please enter letters only!');
     }
-    unsolved.innerHTML = text;
 }
+
+
 
 function generateRndmWord() {
     let rndWord = wordList[randIntRange(wordList.length)];
     word = new Word(rndWord);
+    // word = new Word('apple');
     console.log('Random word generated: ' + word.startWord);
+    word.displayText();
 }
-
-
 
 // Utilities
 function randIntRange(range) {
@@ -64,5 +138,9 @@ function randIntRange(range) {
     // console.log(rand);
     return rand;
 }
+function getId(id) {
+    return document.getElementById(id);
+}
+
 
 start();
