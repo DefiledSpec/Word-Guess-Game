@@ -4,6 +4,9 @@ let log = console.log;
 let unsolved = getId('unsolvedWord');
 let userInput = getId('usersInput');
 let userScore = getId('userScore');
+let myDate = getId('myDate');
+
+let myInterval = setInterval(myTimer, 1000);
 
 // Variables
 let word, p;
@@ -33,6 +36,12 @@ class Word {
         }
         return arr2;
     }
+    wordReset() {
+        unsolved.innerText = this.unsolvedArr;
+        // this.startWord = '';
+        // this.wordArr = [];
+        // this.unsolvedArr = [];
+    }
     displayText() {
         let text = '';
         for(let i = 0; i < this.unsolvedArr.length; i++) {
@@ -43,7 +52,8 @@ class Word {
     checkCompleted() {
         let idx = this.unsolvedArr.indexOf('_');
         if (idx == -1) {
-            alert(`You win! The word was: ${this.startWord}`);
+            log(`You win! The word was: ${this.startWord}`);
+            reset();
             // g.running = false;
         } else {
             log('Getting closer!');
@@ -55,9 +65,9 @@ class Word {
             if(this.wordArr[i] === input) {
                 let b = this.unsolvedArr.splice(i, 1, input); // if we find a match, update the unsolved arr
                 this.checkCompleted();
-                p.score++;// todo: MOVE THIS OUT of the LOOP
+                p.score += 5;// TODO MOVE THIS OUT of the LOOP
             } else {
-                p.score--;// todo: MOVE THIS OUT of the LOOP
+                
                     // we didn't find a match for the char at this idx 
             }
         }
@@ -82,13 +92,13 @@ class Player {
         // this.displayText(); //this removes the start message on startup
                                 //maybe we should try to make the player later on and uncomment this
     }
+    playerReset() {
+        this.guesses = 0;
+        this.inputArr = [];
+    }
     addInput(input) {        
         let alreadyUsed = this.inputArr.indexOf(input);
-        if(p.guesses >= 11) {
-            alert(`Too many guesses, better luck next time! The word was ${word.startWord}`);
-            // g.running = false;
-            return;
-        } else if(alreadyUsed !== -1) {
+        if(alreadyUsed !== -1) {
             log(`You already guessed that letter!`);
         } else {
             p.guesses++;
@@ -112,6 +122,7 @@ class Player {
 p = new Player();
 function start() {
     generateRndmWord();
+    word.displayText();
     
 }
 start();
@@ -119,6 +130,9 @@ start();
 window.addEventListener('keydown', (key) => {
     let x = 65; 
     let y = 90;
+    if(p.guesses === 11) { 
+        reset()
+    }
     if(key.keyCode >= x && key.keyCode <= y) {
         p.addInput(key.key);
     } else if(key.keyCode == 123) { //f12 debug menu
@@ -128,6 +142,15 @@ window.addEventListener('keydown', (key) => {
     }
 });
 // Utilities
+function reset() {
+    unsolved.innerText = '';
+
+    p.playerReset();
+    log(p.guesses);
+    word.wordReset();
+    start();
+}
+
 function generateRndmWord() {
     let rndWord = wordList[randIntRange(wordList.length)];
     word = new Word(rndWord);
@@ -140,4 +163,9 @@ function randIntRange(range) {
 }
 function getId(id) {
     return document.getElementById(id);
+}
+
+function myTimer() {
+    var d = new Date();
+    myDate.innerText = d.toLocaleTimeString();
 }
